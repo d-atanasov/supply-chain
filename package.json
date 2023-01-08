@@ -10,6 +10,10 @@
   "keywords": [],
   "author": "datanasov",
   "license": "MIT",
+  "dependencies": {
+    "web3": "^1.8.1",
+    "@truffle/contract": "4.6.11"
+  },
   "devDependencies": {
     "lite-server": "2.6.1",
     "@truffle/hdwallet-provider": "2.1.4",
