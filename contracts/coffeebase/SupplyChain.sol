@@ -157,7 +157,7 @@ contract SupplyChain {
   function harvestItem(uint _upc, address _originFarmerID, string memory _originFarmName, string memory _originFarmInformation, string memory  _originFarmLatitude, string memory  _originFarmLongitude, string memory  _productNotes) public 
   {
     // Add the new item as part of Harvest
-    items[_upc] = Item({sku: sku, upc: _upc, ownerID: msg.sender, originFarmerID: payable(_originFarmerID), originFarmName: _originFarmName, originFarmInformation: _originFarmInformation, originFarmLatitude: _originFarmLatitude, originFarmLongitude: _originFarmLongitude, productID: sku + _upc, productNotes: _productNotes, productPrice: 0, itemState: State.Harvested, distributorID: address(0), retailerID : address(0), consumerID: payable(address(0))});
+    items[_upc] = Item({sku: sku, upc: _upc, ownerID: _originFarmerID, originFarmerID: payable(_originFarmerID), originFarmName: _originFarmName, originFarmInformation: _originFarmInformation, originFarmLatitude: _originFarmLatitude, originFarmLongitude: _originFarmLongitude, productID: sku + _upc, productNotes: _productNotes, productPrice: 0, itemState: State.Harvested, distributorID: address(0), retailerID : address(0), consumerID: payable(address(0))});
     // Increment sku
     sku = sku + 1;
     // Emit the appropriate event
@@ -216,14 +216,13 @@ contract SupplyChain {
     checkValue(_upc)
   {
     address byuer = msg.sender;
-    Item memory itemBeingBought = items[_upc];
-    uint  price = itemBeingBought.productPrice;
+    uint  price = items[_upc].productPrice;
     // Update the appropriate fields - ownerID, distributorID, itemState
-    itemBeingBought.ownerID = byuer;
-    itemBeingBought.distributorID = byuer;
-    itemBeingBought.itemState = State.Sold;
+    items[_upc].ownerID = byuer;
+    items[_upc].distributorID = byuer;
+    items[_upc].itemState = State.Sold;
     // Transfer money to farmer
-    itemBeingBought.originFarmerID.transfer(price);
+    items[_upc].originFarmerID.transfer(price);
     // emit the appropriate event
     emit Sold(_upc);
   }
@@ -250,11 +249,10 @@ contract SupplyChain {
     // Access Control List enforced by calling Smart Contract / DApp
   {
     address reciever = msg.sender;
-    Item memory itemBeingRecieved = items[_upc];
     // Update the appropriate fields - ownerID, retailerID, itemState
-    itemBeingRecieved.ownerID = reciever;
-    itemBeingRecieved.retailerID = reciever;
-    itemBeingRecieved.itemState = State.Received;
+    items[_upc].ownerID = reciever;
+    items[_upc].retailerID = reciever;
+    items[_upc].itemState = State.Received;
     // Emit the appropriate event
     emit Received(_upc);
   }
@@ -267,11 +265,10 @@ contract SupplyChain {
     // Access Control List enforced by calling Smart Contract / DApp
   {
     address purchaser = msg.sender;
-    Item memory itemBeingPurchased = items[_upc];
     // Update the appropriate fields - ownerID, consumerID, itemState
-    itemBeingPurchased.ownerID = purchaser;
-    itemBeingPurchased.consumerID = payable(purchaser);
-    itemBeingPurchased.itemState = State.Purchased;
+    items[_upc].ownerID = purchaser;
+    items[_upc].consumerID = payable(purchaser);
+    items[_upc].itemState = State.Purchased;
     // Emit the appropriate event
     emit Purchased(_upc);
   }
