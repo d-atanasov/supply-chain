@@ -11,6 +11,7 @@
   "author": "datanasov",
   "license": "MIT",
   "devDependencies": {
-    "lite-server": "2.4.0"
+    "lite-server": "2.6.1",
+    "@truffle/hdwallet-provider": "2.1.4"
   }
 }
