@@ -93,7 +93,7 @@ App = {
             }
             console.log('getMetaskID:',res);
             App.metamaskAccountID = res[0];
-
+            web3.eth.defaultAccount = App.metamaskAccountID;
         })
     },
 
@@ -234,8 +234,9 @@ App = {
         var processId = parseInt($(event.target).data('id'));
 
         App.contracts.SupplyChain.deployed().then(function(instance) {
-            const walletValue = web3.toWei(3, "ether");
-            return instance.buyItem(App.upc, {from: App.metamaskAccountID, value: walletValue});
+            const walletValue = web3.toWei('0.0000000000001', "ether");
+            const gasPrice = web3.toWei('0.000000009', 'ether');
+            return instance.buyItem(App.upc, {from: App.metamaskAccountID, value: walletValue, gasPrice: gasPrice, gas: 1000000});
         }).then(function(result) {
             $("#ftc-item").text(result);
             console.log('buyItem',result);
